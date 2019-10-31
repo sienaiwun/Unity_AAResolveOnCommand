@@ -11,7 +11,7 @@
 
 #### 实现步骤
 LWRP,UWP模板使用[RenderTargetIdentifier](https://docs.unity3d.com/ScriptReference/Rendering.RenderTargetIdentifier.html)进行RT的切换，这个类很难设置resolve的频率，但是RT也可以由[RenderTexture](https://docs.unity3d.com/ScriptReference/RenderTexture.html)设置，这个类的创建时候的[bindMS](https://docs.unity3d.com/ScriptReference/RenderTextureDescriptor-bindMS.html)参数来控制是否自动进行RT的resolve和[ResolveAntiAliasedSurface](https://docs.unity3d.com/ScriptReference/RenderTexture.ResolveAntiAliasedSurface.html)手动控制resolve的操作。
-具体修改可见[resolve rendertarget on command](https://github.com/sienaiwun/Unity_AAResolveOnCommand/commit/1ff584496e8cbcdb36571e327362a6ac9c9242ea)修改。存储上，本修改在使用msaa的rendertarget通过开启bindms设置增加一个带msaa的rendertexure(m_color_handle)和一个不带msaa的rendertexture(m_resolve_handle)。看上去增加一个rt，但是在unity本身中如果关闭bindms,只用一个rt内部也会有两个rendertexutre handle,一个带msaa的texture2dMS，一个不带msaatexture2d。所以概念上市等同的。
+具体修改可见[resolve rendertarget on command](https://github.com/sienaiwun/Unity_AAResolveOnCommand/commit/1ff584496e8cbcdb36571e327362a6ac9c9242ea)修改。存储上，本修改在使用msaa的rendertarget通过开启bindms设置增加一个带msaa的rendertexure(m_color_handle)和一个不带msaa的rendertexture(m_resolve_handle)。看上去增加一个rt，但是在unity本身中如果关闭bindms,只用一个rt内部也会有两个rendertexutre handle,一个带msaa的texture2dMS，一个不带msaatexture2d。所以概念上是等同的。
 
 #### 结果
 修改后再rendertarget的创建函数可以指定rt由RenderTargetIdentifier还是rendertexture创建。如果是使用msaa的rendertarget，需要用GetShaderResource()返回Texture2D，原来的Identifier()则返回rendertarget handle 或者Texture2DMS.

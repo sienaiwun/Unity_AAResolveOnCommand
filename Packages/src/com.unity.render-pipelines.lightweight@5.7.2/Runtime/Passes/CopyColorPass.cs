@@ -65,17 +65,17 @@ namespace UnityEngine.Rendering.LWRP
             switch (m_DownsamplingMethod)
             {
                 case Downsampling.None:
-                    Blit(cmd, source.IdentifierAsSRV(), opaqueColorRT);
+                    Blit(cmd, source.GetShaderResource(), opaqueColorRT);
                     break;
                 case Downsampling._2xBilinear:
-                    Blit(cmd, source.IdentifierAsSRV(), opaqueColorRT);
+                    Blit(cmd, source.GetShaderResource(), opaqueColorRT);
                     break;
                 case Downsampling._4xBox:
                     m_SamplingMaterial.SetFloat(m_SampleOffsetShaderHandle, 2);
-                    Blit(cmd, source.IdentifierAsSRV(), opaqueColorRT, m_SamplingMaterial);
+                    Blit(cmd, source.GetShaderResource(), opaqueColorRT, m_SamplingMaterial);
                     break;
                 case Downsampling._4xBilinear:
-                    Blit(cmd, source.IdentifierAsSRV(), opaqueColorRT);
+                    Blit(cmd, source.GetShaderResource(), opaqueColorRT);
                     break;
             }
             context.ExecuteCommandBuffer(cmd);

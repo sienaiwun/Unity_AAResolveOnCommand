@@ -32,7 +32,7 @@ namespace UnityEngine.Rendering.LWRP
                 m_renderTextureName = name;
         }
 
-        public RenderTargetIdentifier IdentifierAsSRV()
+        public RenderTargetIdentifier GetShaderResource()
         {
             if (IsRenderTexuture())
             {
@@ -79,7 +79,7 @@ namespace UnityEngine.Rendering.LWRP
 
         public override int GetHashCode()
         {
-            return id + m_colorHandle.GetHashCode();
+            return id;
         }
 
         public static bool operator==(RenderTargetHandle c1, RenderTargetHandle c2)

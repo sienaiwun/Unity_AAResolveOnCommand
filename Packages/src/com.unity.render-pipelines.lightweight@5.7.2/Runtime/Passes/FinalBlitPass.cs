@@ -60,7 +60,7 @@ namespace UnityEngine.Rendering.LWRP
             }
             else
             {
-                cmd.SetGlobalTexture("_BlitTex", m_Source.IdentifierAsSRV());
+                cmd.SetGlobalTexture("_BlitTex", m_Source.GetShaderResource());
 
                 SetRenderTarget(
                     cmd,

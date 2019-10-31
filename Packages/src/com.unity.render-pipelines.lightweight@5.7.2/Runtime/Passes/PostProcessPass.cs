@@ -51,7 +51,7 @@ namespace UnityEngine.Rendering.LWRP
             bool flip = isLastRenderPass && cameraData.camera.targetTexture == null;
 
             CommandBuffer cmd = CommandBufferPool.Get(k_RenderPostProcessingTag);
-            RenderPostProcessing(cmd, ref renderingData.cameraData, m_Descriptor, m_Source.IdentifierAsSRV(),
+            RenderPostProcessing(cmd, ref renderingData.cameraData, m_Descriptor, m_Source.GetShaderResource(),
                     m_Destination.Identifier(), m_IsOpaquePostProcessing, flip);
             context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);

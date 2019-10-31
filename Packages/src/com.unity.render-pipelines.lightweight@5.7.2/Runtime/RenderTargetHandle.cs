@@ -31,7 +31,9 @@ namespace UnityEngine.Rendering.LWRP
             if (!asRendertarget)
                 m_renderTextureName = name;
         }
-
+        /*
+         * Get Texture2D as SRV
+         */
         public RenderTargetIdentifier GetShaderResource()
         {
             if (IsRenderTexuture())
@@ -51,7 +53,9 @@ namespace UnityEngine.Rendering.LWRP
             return new RenderTargetIdentifier(id);
         }
 
-
+        /*
+         * Get rendertarget handle or Texture2DMS
+         */
         public RenderTargetIdentifier Identifier()
         {
             if (IsRenderTexuture())
@@ -119,6 +123,9 @@ namespace UnityEngine.Rendering.LWRP
                 cmd.GetTemporaryRT(id, desc, mode);
         }
 
+        /*
+         * Resolve aa on command
+         */
         public void ResolveAA(CommandBuffer cmd)
         {
             if(m_hasMsaa)

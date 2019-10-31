@@ -41,7 +41,7 @@ namespace UnityEngine.Rendering.LWRP
             descriptor.colorFormat = RenderTextureFormat.Depth;
             descriptor.depthBufferBits = 32; //TODO: do we really need this. double check;
             descriptor.msaaSamples = 1;
-            cmd.GetTemporaryRT(destination.id, descriptor, FilterMode.Point);
+            destination.GetTemporary(cmd, descriptor, FilterMode.Point);
         }
 
         /// <inheritdoc/>
@@ -105,7 +105,7 @@ namespace UnityEngine.Rendering.LWRP
             if (cmd == null)
                 throw new ArgumentNullException("cmd");
 
-            cmd.ReleaseTemporaryRT(destination.id);
+            destination.ReleaseTemporary(cmd);
             destination = RenderTargetHandle.CameraTarget;
         }
     }

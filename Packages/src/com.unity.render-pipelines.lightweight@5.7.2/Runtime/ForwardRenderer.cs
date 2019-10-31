@@ -13,6 +13,7 @@ namespace UnityEngine.Rendering.LWRP
         PostProcessPass m_OpaquePostProcessPass;
         DrawSkyboxPass m_DrawSkyboxPass;
         CopyDepthPass m_CopyDepthPass;
+        ResolveAAPass m_ResolvePass;
         CopyColorPass m_CopyColorPass;
         RenderTransparentForwardPass m_RenderTransparentForwardPass;
         PostProcessPass m_PostProcessPass;
@@ -51,6 +52,7 @@ namespace UnityEngine.Rendering.LWRP
             m_CopyDepthPass = new CopyDepthPass(RenderPassEvent.BeforeRenderingOpaques, copyDepthMaterial);
             m_OpaquePostProcessPass = new PostProcessPass(RenderPassEvent.BeforeRenderingOpaques, true);
             m_DrawSkyboxPass = new DrawSkyboxPass(RenderPassEvent.BeforeRenderingSkybox);
+            m_ResolvePass = new ResolveAAPass(RenderPassEvent.BeforeRenderingTransparents - 1);
             m_CopyColorPass = new CopyColorPass(RenderPassEvent.BeforeRenderingTransparents, samplingMaterial, downsamplingMethod);
             m_RenderTransparentForwardPass = new RenderTransparentForwardPass(RenderPassEvent.BeforeRenderingTransparents, RenderQueueRange.transparent, data.transparentLayerMask);
             m_PostProcessPass = new PostProcessPass(RenderPassEvent.BeforeRenderingPostProcessing);
@@ -63,10 +65,10 @@ namespace UnityEngine.Rendering.LWRP
 
             // RenderTexture format depends on camera and pipeline (HDR, non HDR, etc)
             // Samples (MSAA) depend on camera and pipeline
-            m_CameraColorAttachment.Init("_CameraColorTexture");
-            m_CameraDepthAttachment.Init("_CameraDepthAttachment");
-            m_DepthTexture.Init("_CameraDepthTexture");
-            m_OpaqueColor.Init("_CameraOpaqueTexture");
+            m_CameraColorAttachment = new RenderTargetHandle("_CameraColorTexture",false);
+            m_CameraDepthAttachment = new RenderTargetHandle("_CameraDepthAttachment", false);
+            m_DepthTexture = new RenderTargetHandle("_CameraDepthTexture", false);
+            m_OpaqueColor = new RenderTargetHandle("_CameraOpaqueTexture", false);
             m_ForwardLights = new ForwardLights();
         }
 
@@ -147,10 +149,14 @@ namespace UnityEngine.Rendering.LWRP
                 m_CopyDepthPass.Setup(m_ActiveCameraDepthAttachment, m_DepthTexture);
                 EnqueuePass(m_CopyDepthPass);
             }
-
+            if(m_ActiveCameraColorAttachment!= RenderTargetHandle.CameraTarget)
+            { 
+                m_ResolvePass.Setup(m_ActiveCameraColorAttachment);
+                EnqueuePass(m_ResolvePass);
+            }
             if (renderingData.cameraData.requiresOpaqueTexture)
             {
-                m_CopyColorPass.Setup(m_ActiveCameraColorAttachment.Identifier(), m_OpaqueColor);
+                m_CopyColorPass.Setup(m_ActiveCameraColorAttachment, m_OpaqueColor);
                 EnqueuePass(m_CopyColorPass);
             }
 
@@ -228,10 +234,10 @@ namespace UnityEngine.Rendering.LWRP
         public override void FinishRendering(CommandBuffer cmd)
         {
             if (m_ActiveCameraColorAttachment != RenderTargetHandle.CameraTarget)
-                cmd.ReleaseTemporaryRT(m_ActiveCameraColorAttachment.id);
+                m_ActiveCameraColorAttachment.ReleaseTemporary(cmd);
 
             if (m_ActiveCameraDepthAttachment != RenderTargetHandle.CameraTarget)
-                cmd.ReleaseTemporaryRT(m_ActiveCameraDepthAttachment.id);
+                m_ActiveCameraDepthAttachment.ReleaseTemporary(cmd);
         }
 
         void CreateCameraRenderTarget(ScriptableRenderContext context, ref CameraData cameraData)
@@ -244,7 +250,7 @@ namespace UnityEngine.Rendering.LWRP
                 bool useDepthRenderBuffer = m_ActiveCameraDepthAttachment == RenderTargetHandle.CameraTarget;
                 var colorDescriptor = descriptor;
                 colorDescriptor.depthBufferBits = (useDepthRenderBuffer) ? k_DepthStencilBufferBits : 0;
-                cmd.GetTemporaryRT(m_ActiveCameraColorAttachment.id, colorDescriptor, FilterMode.Bilinear);
+                m_ActiveCameraColorAttachment.GetTemporary(cmd, colorDescriptor, FilterMode.Bilinear);
             }
 
             if (m_ActiveCameraDepthAttachment != RenderTargetHandle.CameraTarget)
@@ -253,7 +259,7 @@ namespace UnityEngine.Rendering.LWRP
                 depthDescriptor.colorFormat = RenderTextureFormat.Depth;
                 depthDescriptor.depthBufferBits = k_DepthStencilBufferBits;
                 depthDescriptor.bindMS = msaaSamples > 1 && !SystemInfo.supportsMultisampleAutoResolve && (SystemInfo.supportsMultisampledTextures != 0);
-                cmd.GetTemporaryRT(m_ActiveCameraDepthAttachment.id, depthDescriptor, FilterMode.Point);
+                m_ActiveCameraDepthAttachment.GetTemporary(cmd, depthDescriptor, FilterMode.Point);
             }
 
             context.ExecuteCommandBuffer(cmd);

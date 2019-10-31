@@ -46,7 +46,7 @@ namespace UnityEngine.Rendering.LWRP
             AdditionalShadowsConstantBuffer._AdditionalShadowOffset2 = Shader.PropertyToID("_AdditionalShadowOffset2");
             AdditionalShadowsConstantBuffer._AdditionalShadowOffset3 = Shader.PropertyToID("_AdditionalShadowOffset3");
             AdditionalShadowsConstantBuffer._AdditionalShadowmapSize = Shader.PropertyToID("_AdditionalShadowmapSize");
-            m_AdditionalLightsShadowmap.Init("_AdditionalLightsShadowmapTexture");
+            m_AdditionalLightsShadowmap = new RenderTargetHandle("_AdditionalLightsShadowmapTexture");
         }
 
         public bool Setup(ref RenderingData renderingData)

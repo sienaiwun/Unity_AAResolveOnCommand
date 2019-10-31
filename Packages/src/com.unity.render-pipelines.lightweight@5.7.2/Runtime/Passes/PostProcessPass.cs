@@ -24,7 +24,7 @@ namespace UnityEngine.Rendering.LWRP
         public PostProcessPass(RenderPassEvent evt, bool renderOpaques = false)
         {
             m_IsOpaquePostProcessing = renderOpaques;
-            m_TemporaryColorTexture.Init("_TemporaryColorTexture");
+            m_TemporaryColorTexture= new RenderTargetHandle("_TemporaryColorTexture");
 
             renderPassEvent = evt;
         }
@@ -45,12 +45,13 @@ namespace UnityEngine.Rendering.LWRP
         /// <inheritdoc/>
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
+
             ref CameraData cameraData = ref renderingData.cameraData;
             bool isLastRenderPass = (m_Destination == RenderTargetHandle.CameraTarget);
             bool flip = isLastRenderPass && cameraData.camera.targetTexture == null;
 
             CommandBuffer cmd = CommandBufferPool.Get(k_RenderPostProcessingTag);
-            RenderPostProcessing(cmd, ref renderingData.cameraData, m_Descriptor, m_Source.Identifier(),
+            RenderPostProcessing(cmd, ref renderingData.cameraData, m_Descriptor, m_Source.IdentifierAsSRV(),
                     m_Destination.Identifier(), m_IsOpaquePostProcessing, flip);
             context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);

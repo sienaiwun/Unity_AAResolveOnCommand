@@ -12,7 +12,7 @@ namespace UnityEngine.Rendering.LWRP
         public ScreenSpaceShadowResolvePass(RenderPassEvent evt, Material screenspaceShadowsMaterial)
         {
             m_ScreenSpaceShadowsMaterial = screenspaceShadowsMaterial;
-            m_ScreenSpaceShadowmap.Init("_ScreenSpaceShadowmapTexture");
+            m_ScreenSpaceShadowmap = new RenderTargetHandle("_ScreenSpaceShadowmapTexture");
             renderPassEvent = evt;
         }
 
@@ -27,8 +27,8 @@ namespace UnityEngine.Rendering.LWRP
 
         public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
         {
-            cmd.GetTemporaryRT(m_ScreenSpaceShadowmap.id, m_RenderTextureDescriptor, FilterMode.Bilinear);
-
+            //cmd.GetTemporaryRT(m_ScreenSpaceShadowmap.id, m_RenderTextureDescriptor, FilterMode.Bilinear);
+            m_ScreenSpaceShadowmap.GetTemporary(cmd,m_RenderTextureDescriptor, FilterMode.Bilinear);
             // Note: The source isn't actually 'used', but there's an engine peculiarity (bug) that
             // doesn't like null sources when trying to determine a stereo-ized blit.  So for proper
             // stereo functionality, we use the screen-space shadow map as the source (until we have
@@ -69,8 +69,8 @@ namespace UnityEngine.Rendering.LWRP
         {
             if (cmd == null)
                 throw new ArgumentNullException("cmd");
-
-            cmd.ReleaseTemporaryRT(m_ScreenSpaceShadowmap.id);
+            m_ScreenSpaceShadowmap.ReleaseTemporary(cmd);
+            //cmd.ReleaseTemporaryRT(m_ScreenSpaceShadowmap.id);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace UnityEngine.Rendering.LWRP
     {
         int kDepthBufferBits = 32;
 
-        private RenderTargetHandle depthAttachmentHandle { get; set; }
+        public RenderTargetHandle depthAttachmentHandle;
         internal RenderTextureDescriptor descriptor { get; private set; }
 
         FilteringSettings m_FilteringSettings;
@@ -46,9 +46,10 @@ namespace UnityEngine.Rendering.LWRP
 
         public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
         {
-            cmd.GetTemporaryRT(depthAttachmentHandle.id, descriptor, FilterMode.Point);
+            //cmd.GetTemporaryRT(depthAttachmentHandle.id, descriptor, FilterMode.Point);
+            depthAttachmentHandle.GetTemporary(cmd,descriptor, FilterMode.Point);
             ConfigureTarget(depthAttachmentHandle.Identifier());
-            ConfigureClear(ClearFlag.All, Color.black);
+            ConfigureClear(ClearFlag.Depth, Color.black);
         }
 
         /// <inheritdoc/>
@@ -85,7 +86,8 @@ namespace UnityEngine.Rendering.LWRP
 
             if (depthAttachmentHandle != RenderTargetHandle.CameraTarget)
             {
-                cmd.ReleaseTemporaryRT(depthAttachmentHandle.id);
+                //cmd.ReleaseTemporaryRT(depthAttachmentHandle.id);
+                depthAttachmentHandle.ReleaseTemporary(cmd);
                 depthAttachmentHandle = RenderTargetHandle.CameraTarget;
             }
         }

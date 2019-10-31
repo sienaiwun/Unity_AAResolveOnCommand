@@ -56,7 +56,7 @@ namespace UnityEngine.Rendering.LWRP
             MainLightShadowConstantBuffer._ShadowOffset3 = Shader.PropertyToID("_MainLightShadowOffset3");
             MainLightShadowConstantBuffer._ShadowmapSize = Shader.PropertyToID("_MainLightShadowmapSize");
 
-            m_MainLightShadowmap.Init("_MainLightShadowmapTexture");
+            m_MainLightShadowmap = new RenderTargetHandle("_MainLightShadowmapTexture");
         }
 
         public bool Setup(ref RenderingData renderingData)

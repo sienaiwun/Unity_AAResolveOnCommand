@@ -1,7 +1,5 @@
 ## Unity手动控制rendertarget的resolveAA操作
 
-#### 简介
-本文介绍一种手动控制rendertarget resolve操作的方法。原生Unity的srp模板(LWRP,UWP)会自动resolve 带有msaa的rendertarget。但是这样会产生冗余的resolve操作，本文介绍一种手动控制rendertarget的resolveAA方法。
 #### 介绍
 带有MSAA的RT常被用于增加画面表现细节，又由于MSAA操作在某些手机硬件上[绘制是free的](https://docs.imgtec.com/PerfRec/topics/c_PerfRec_msaa_performance.html)，所以在手机上一种常有的操作是开MSAA同时降分辨率来增加效率。但是在unity引擎上有个掣肘，每次切换rendertarget都会出现切换出去的rendertarget发生aa的resolve操作。在某些情况下rendertarget的resolve操作是冗余的,而且还[影响效率](https://forum.unity.com/threads/every-graphics-blit-causes-rendertexture-resolveaa-if-msaa-enabled-which-is-killing-framerate.457653/)。
 
@@ -20,7 +18,3 @@ LWRP,UWP模板使用[RenderTargetIdentifier](https://docs.unity3d.com/ScriptRefe
 在render中则需要显示增加一个resolvePass添加resolveAA操作。
 ![after](https://github.com/sienaiwun/Unity_AAResolveOnCommand/blob/master/imgs/after.png)
 显示只用一个resolve操作就能实现之前的操作，省下一个resolve操作。
-
-
-### 代码库
-[GitHub - sienaiwun/Unity_AAResolveOnCommand: A demo show how to controls unity's MSAA rendertarget resolve command using SRP](https://github.com/sienaiwun/Unity_AAResolveOnCommand)

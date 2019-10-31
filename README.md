@@ -1,11 +1,18 @@
 ##  Unity Resolve AA Rendertarget On Command
 [![license](http://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Tencent/InjectFix/blob/master/LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-blue.svg)](https://github.com/Tencent/InjectFix/pulls)
+
+
 When setting rendertargets in Unity LWRP or UWP templates, it will triggered the resolve operation of the old rendertarget if MSAA is used automatically. On some platforms, resolve operation is [costly](https://forum.unity.com/threads/every-graphics-blit-causes-rendertexture-resolveaa-if-msaa-enabled-which-is-killing-framerate.457653/). This demo gives more control over  rendertargets by setting resolve operations manually.
+
+
 ![resovleaa](https://github.com/sienaiwun/Unity_AAResolveOnCommand/blob/master/imgs/before.png)
 This image shows the redundant resolve operations in LWRP or UWP. A MSAA rendertarget is used as a shader resource for two consecutive passes, two resolve operation is triggerd although the second is not needed.
+
+
 ![after](https://github.com/sienaiwun/Unity_AAResolveOnCommand/blob/master/imgs/after.png) 
 The above image shows in this demo, only one resolve operation is triggered in the same scenario.
+
 
 The magic here is to use [RenderTexture](https://docs.unity3d.com/ScriptReference/RenderTexture.html) instead of [RenderTargetIdentifier](https://docs.unity3d.com/ScriptReference/Rendering.RenderTargetIdentifier.html). Rendertexture gives [a way](https://docs.unity3d.com/ScriptReference/RenderTextureDescriptor-bindMS.html) to control the auto-resolve, and [a method](https://docs.unity3d.com/ScriptReference/RenderTexture.ResolveAntiAliasedSurface.html) to trigger the resolve operation on command. The related changes are in submit [resolve rendertarget on command](https://github.com/sienaiwun/Unity_AAResolveOnCommand/commit/1ff584496e8cbcdb36571e327362a6ac9c9242ea).
 

@@ -10,9 +10,13 @@ The above image shows in this demo, only one resolve operation is triggered in t
 The magic here is to use [RenderTexture](https://docs.unity3d.com/ScriptReference/RenderTexture.html) instead of [RenderTargetIdentifier](https://docs.unity3d.com/ScriptReference/Rendering.RenderTargetIdentifier.html). Rendertexture gives [a way](https://docs.unity3d.com/ScriptReference/RenderTextureDescriptor-bindMS.html) to control the auto-resolve, and [a method](https://docs.unity3d.com/ScriptReference/RenderTexture.ResolveAntiAliasedSurface.html) to trigger the resolve operation on command. The related changes are in submit [resolve rendertarget on command](https://github.com/sienaiwun/Unity_AAResolveOnCommand/commit/1ff584496e8cbcdb36571e327362a6ac9c9242ea).
 
 Xcode capture frame also visualizes it：
+
 ![before](https://github.com/sienaiwun/Unity_AAResolveOnCommand/blob/master/imgs/framegraph_before.png)
+
 The previous way has two resolve operations. Each one cost 0.6ms 
+
 ![now](https://github.com/sienaiwun/Unity_AAResolveOnCommand/blob/master/imgs/framegraph_now.png)
+
 Now two resolve operations merge into a single one.
 
 
@@ -38,7 +42,11 @@ LWRP,UWP模板使用[RenderTargetIdentifier](https://docs.unity3d.com/ScriptRefe
 显示只用一个resolve操作就能实现之前的操作，省下一个resolve操作。
 
 Xcode 截帧也显示出了这一点：
+
 ![before](https://github.com/sienaiwun/Unity_AAResolveOnCommand/blob/master/imgs/framegraph_before.png)
+
 原来resolve操作有两个（图中的蓝色节点），在iphone XR耗时0.6ms。经过优化后
+
 ![now](https://github.com/sienaiwun/Unity_AAResolveOnCommand/blob/master/imgs/framegraph_now.png)
+
 可以看到只有一个resolve操作，最后resolve的texture2d被两个pass所用，iphone XR上节省了一个600us的全屏resolve操作。

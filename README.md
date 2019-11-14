@@ -8,6 +8,7 @@ When setting rendertargets in Unity LWRP or URP templates, it will triggered the
 
 This image shows the redundant resolve operations in LWRP or UWP. A MSAA rendertarget is used as a shader resource for two consecutive passes, two resolve operation is triggerd although the second is not needed.
 
+In this demo, the frame analysis is this:
 ![after](https://github.com/sienaiwun/Unity_AAResolveOnCommand/blob/master/imgs/after.png) 
 
 The above image shows in this demo, only one resolve operation is triggered in the same scenario.

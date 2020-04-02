@@ -1,6 +1,6 @@
 ##  Unity Resolve AA Rendertarget On Command
-[![license](http://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Tencent/InjectFix/blob/master/LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-blue.svg)](https://github.com/Tencent/InjectFix/pulls)
+[![license](http://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/sienaiwun/Unity_AAResolveOnCommand/blob/master/LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-blue.svg)](https://github.com/sienaiwun/Unity_AAResolveOnCommand/pulls)
 
 When setting rendertargets in Unity LWRP or URP templates, it will triggered the resolve operation of the old rendertarget if MSAA is used automatically. On some platforms, resolve operation is [costly](https://forum.unity.com/threads/every-graphics-blit-causes-rendertexture-resolveaa-if-msaa-enabled-which-is-killing-framerate.457653/)(0.6ms on Iphone XR for a full-screen msaa's buffer's resolve operation). This demo gives more control over  rendertargets by setting resolve operations manually.
 
